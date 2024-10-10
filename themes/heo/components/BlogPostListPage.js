@@ -18,15 +18,17 @@ const BlogPostListPage = ({ page = 1, posts = [], postCount, siteInfo }) => {
   const POSTS_PER_PAGE = siteConfig('POSTS_PER_PAGE', 12, NOTION_CONFIG)
   const totalPage = Math.ceil(postCount / POSTS_PER_PAGE)
   const showPagination = postCount >= POSTS_PER_PAGE
-  const POST_TWO_COLS = siteConfig('HEO_HOME_POST_TWO_COLS', true, CONFIG)
+  // 移除了此行以确保始终使用两列布局
+  // const POST_TWO_COLS = siteConfig('HEO_HOME_POST_TWO_COLS', true, CONFIG) 
+
   if (!posts || posts.length === 0 || page > totalPage) {
     return <BlogPostListEmpty />
   } else {
     return (
       <div id='container' className='w-full'>
         {/* 文章列表 */}
-        <div
-          className={`${POST_TWO_COLS && '2xl:grid 2xl:grid-cols-2'} grid-cols-1 gap-5`}>
+        {/* 修改了这里，强制使用两列布局 */}
+        <div className={`md:grid md:grid-cols-2 grid-cols-1 gap-5`}>
           {posts?.map(post => (
             <BlogPostCard
               index={posts.indexOf(post)}
