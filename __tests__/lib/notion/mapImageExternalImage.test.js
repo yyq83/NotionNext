@@ -90,6 +90,34 @@ describe('mapImgUrl 外链图片', () => {
     expect(occurrences).toBe(1)
   })
 
+  describe('自定义图片 CDN 的 Notion 内置资源', () => {
+    beforeEach(() => {
+      BLOG.NOTION_HOST = 'https://cdn.earthyang.com'
+    })
+
+    it.each([
+      '/icons/aquarius_gray.svg',
+      'https://cdn.earthyang.com/icons/aquarius_gray.svg'
+    ])('内置头像 %s 通过图片代理读取 Notion 原站', image => {
+      const mapped = mapImgUrl(image, imageBlock('site-icon'))
+      expect(mapped.startsWith(`${BLOG.NOTION_HOST}/image/`)).toBe(true)
+      expect(proxySource(mapped)).toBe(
+        'https://www.notion.so/icons/aquarius_gray.svg'
+      )
+    })
+
+    it.each([
+      '/images/page-cover/solid_blue.png',
+      'https://cdn.earthyang.com/images/page-cover/solid_blue.png'
+    ])('内置封面 %s 不重复代理，也不被随机图替换', image => {
+      BLOG.RANDOM_IMAGE_URL = 'https://replacement.example/random'
+      BLOG.RANDOM_IMAGE_REPLACE_TEXT = ''
+      expect(mapImgUrl(image, imageBlock('builtin-cover'))).toBe(
+        `${BLOG.NOTION_HOST}/images/page-cover/solid_blue.png`
+      )
+    })
+  })
+
   it('中转链接仍带去重参数 t=<blockId>', () => {
     const block = imageBlock('block-id-5')
     const ret = mapImgUrl(hotlinkBlockedUrl, block, 'block', false)
