@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
@@ -23,17 +23,17 @@ export const MenuItem = ({ link }) => {
       {/* 普通 MenuItem */}
       {!hasSubMenu && (
         <li className='group relative whitespace-nowrap'>
-          <Link
+          <SmartLink
             href={link?.href}
             target={link?.target}
-            className={`ud-menu-scroll mx-8 flex py-2 text-base font-medium text-dark group-hover:text-primary dark:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+            className={`ud-menu-scroll mx-8 flex py-2 text-base font-medium text-dark dark:text-white lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
               router.route === '/'
-                ? 'lg:text-white lg:group-hover:text-white'
-                : ''
+                ? 'max-lg:group-hover:text-primary lg:text-white lg:group-hover:text-white'
+                : 'group-hover:text-primary'
             } lg:group-hover:opacity-70`}>
             {link?.icon && <i className={link.icon + ' mr-2 my-auto'} />}
             {link?.name}
-          </Link>
+          </SmartLink>
         </li>
       )}
 
@@ -42,10 +42,10 @@ export const MenuItem = ({ link }) => {
         <li className='submenu-item group relative whitespace-nowrap'>
           <button
             onClick={toggleSubMenu}
-            className={`cursor-pointer relative px-8 flex items-center justify-between py-2 text-base font-medium text-dark group-hover:text-primary dark:text-white lg:ml-8 lg:mr-0 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 ${
+            className={`cursor-pointer relative px-8 flex items-center justify-between py-2 text-base font-medium text-dark dark:text-white lg:ml-8 lg:mr-0 lg:inline-flex lg:py-6 lg:pl-0 lg:pr-4 ${
               router.route === '/'
-                ? 'lg:text-white lg:group-hover:text-white'
-                : ''
+                ? 'max-lg:group-hover:text-primary lg:text-white lg:group-hover:text-white'
+                : 'group-hover:text-primary'
             } lg:group-hover:opacity-70 xl:ml-10`}>
             <span>
               {link?.icon && <i className={link.icon + ' mr-2 my-auto'} />}
@@ -71,7 +71,7 @@ export const MenuItem = ({ link }) => {
                 : 'hidden opacity-0 invisible'
             }`}>
             {link.subMenus.map((sLink, index) => (
-              <Link
+              <SmartLink
                 key={index}
                 href={sLink.href}
                 target={link?.target}
@@ -81,7 +81,7 @@ export const MenuItem = ({ link }) => {
                   {link?.icon && <i className={sLink.icon + ' mr-2 my-auto'} />}{' '}
                   {sLink.title}
                 </span>
-              </Link>
+              </SmartLink>
             ))}
           </div>
         </li>
