@@ -4,7 +4,7 @@ import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import throttle from 'lodash.throttle'
-import Link from 'next/link'
+import SmartLink from '@/components/SmartLink'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { DarkModeButton } from './DarkModeButton'
@@ -28,7 +28,7 @@ export const Header = props => {
             setColor('')
         }
         // ======= Sticky
-        // window.addEventListener('scroll', navBarScollListener)
+        // window.addEventListener('scroll', navBarScollListener, { passive: true })
         // return () => {
         //     window.removeEventListener('scroll', navBarScollListener)
         // }

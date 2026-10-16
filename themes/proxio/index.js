@@ -24,6 +24,8 @@ import CONFIG from './config'
 import { Style } from './style'
 // import { MadeWithButton } from './components/MadeWithButton'
 import Comment from '@/components/Comment'
+import Catalog from './components/Catalog'
+import MobileCatalog from './components/MobileCatalog'
 import replaceSearchResult from '@/components/Mark'
 import ShareBar from '@/components/ShareBar'
 import DashboardBody from '@/components/ui/dashboard/DashboardBody'
@@ -31,7 +33,7 @@ import DashboardHeader from '@/components/ui/dashboard/DashboardHeader'
 import { useGlobal } from '@/lib/global'
 import { loadWowJS } from '@/lib/plugins/wow'
 import { SignIn, SignUp } from '@clerk/nextjs'
-import Link from 'next/link'
+import SmartLink from '@/components/SmartLink'
 import { ArticleLock } from './components/ArticleLock'
 import { Banner } from './components/Banner'
 import { CTA } from './components/CTA'
@@ -106,10 +108,10 @@ const LayoutIndex = props => {
                     <Blog posts={posts} />
                     {/* 更多文章按钮 */}
                     <div className='container mx-auto flex justify-end mb-4'>
-                        <Link className='text-lg underline' href={'/archive'}>
+                        <SmartLink className='text-lg underline' href={'/archive'}>
                             <span>{locale.COMMON.MORE}</span>
                             <i className='ml-2 fas fa-arrow-right' />
-                        </Link>
+                        </SmartLink>
                     </div>
                 </>
             )}
@@ -178,12 +180,24 @@ const LayoutSlug = props => {
         )
     }
 
+    // 目录显示条件统一收口：锁定态不显示（服务端已生成 post.toc，
+    // 目录有数据不代表文章已解锁）、开关开启且存在目录数据
+    const showCatalog =
+        !lock &&
+        siteConfig('PROXIO_POST_CATALOG_ENABLE', false, CONFIG) &&
+        (post?.toc?.length ?? 0) > 0
+
     return (
         <>
             <Banner title={post?.title} description={post?.summary} />
             <div className='container grow'>
                 <div className='flex flex-wrap justify-center -mx-4'>
-                    <div id='container-inner' className='w-full p-4'>
+                    <div
+                        id='container-inner'
+                        className={
+                            'w-full p-4' +
+                            (showCatalog ? ' xl:w-[calc(100%-16rem)]' : '')
+                        }>
                         {lock && <ArticleLock validPassword={validPassword} />}
 
                         {!lock && post && (
@@ -194,8 +208,23 @@ const LayoutSlug = props => {
                             </div>
                         )}
                     </div>
+                    {/* 桌面端侧边栏目录（默认关闭，PROXIO_POST_CATALOG_ENABLE 开启；仅 xl 及以上显示） */}
+                    {showCatalog && (
+                        <aside
+                            id='proxio-post-catalog'
+                            className='hidden xl:block xl:flex-shrink-0 xl:w-60 p-4'
+                            style={{ position: 'sticky', top: '6rem', alignSelf: 'flex-start' }}>
+                            <div
+                                className='max-h-[calc(100vh-8rem)] overflow-y-auto'
+                                style={{ position: 'relative' }}>
+                                <Catalog post={post} />
+                            </div>
+                        </aside>
+                    )}
                 </div>
             </div>
+            {/* 移动端悬浮目录入口（PROXIO_POST_CATALOG_ENABLE 开启时） */}
+            {showCatalog && <MobileCatalog post={post} />}
         </>
     )
 }
@@ -304,11 +333,11 @@ const Layout404 = props => {
                                 <p className='mb-8 text-base text-body-color dark:text-dark-6'>
                                     {siteConfig('PROXIO_404_TEXT')}
                                 </p>
-                                <Link
+                                <SmartLink
                                     href='/'
                                     className='py-3 text-base font-medium text-white transition rounded-md bg-dark px-7 hover:bg-primary'>
                                     {siteConfig('PROXIO_404_BACK')}
-                                </Link>
+                                </SmartLink>
                             </div>
                         </div>
                     </div>
@@ -364,24 +393,24 @@ const LayoutPostList = props => {
                                         className='wow fadeInUp group mb-10'
                                         data-wow-delay='.1s'>
                                         <div className='mb-8 overflow-hidden rounded-[5px]'>
-                                            <Link href={item?.href} className='block'>
+                                            <SmartLink href={item?.href} className='block'>
                                                 <img
                                                     src={item.pageCoverThumbnail}
                                                     alt={item.title}
                                                     className='w-full transition group-hover:rotate-6 group-hover:scale-125'
                                                 />
-                                            </Link>
+                                            </SmartLink>
                                         </div>
                                         <div>
                                             <span className='mb-6 inline-block rounded-[5px] bg-primary px-4 py-0.5 text-center text-xs font-medium leading-loose text-white'>
                                                 {item.publishDay}
                                             </span>
                                             <h3>
-                                                <Link
+                                                <SmartLink
                                                     href={item?.href}
                                                     className='mb-4 inline-block text-xl font-semibold text-dark hover:text-primary dark:text-white dark:hover:text-primary sm:text-2xl lg:text-xl xl:text-2xl'>
                                                     {item.title}
-                                                </Link>
+                                                </SmartLink>
                                             </h3>
                                             <p className='max-w-[370px] text-base text-body-color dark:text-dark-6'>
                                                 {item.summary}
@@ -417,7 +446,7 @@ const LayoutCategoryIndex = props => {
                     className='duration-200 flex flex-wrap justify-center items-center '>
                     {categoryOptions?.map(category => {
                         return (
-                            <Link
+                            <SmartLink
                                 key={category.name}
                                 href={`/category/${category.name}`}
                                 passHref
@@ -429,7 +458,7 @@ const LayoutCategoryIndex = props => {
                                     <i className='mr-4 fas fa-folder' />
                                     {category.name}({category.count})
                                 </h2>
-                            </Link>
+                            </SmartLink>
                         )
                     })}
                 </div>
@@ -458,7 +487,7 @@ const LayoutTagIndex = props => {
                     {tagOptions.map(tag => {
                         return (
                             <div key={tag.name} className='p-2'>
-                                <Link
+                                <SmartLink
                                     key={tag}
                                     href={`/tag/${encodeURIComponent(tag.name)}`}
                                     passHref
@@ -467,7 +496,7 @@ const LayoutTagIndex = props => {
                                         <i className='mr-1 fas fa-tag' />{' '}
                                         {tag.name + (tag.count ? `(${tag.count})` : '')}{' '}
                                     </div>
-                                </Link>
+                                </SmartLink>
                             </div>
                         )
                     })}
