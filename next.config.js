@@ -303,6 +303,16 @@ const nextConfig = {
 
       return [
         ...langsRewrites,
+        // Keep browser image requests on the site's reachable Vercel domain.
+        // The existing Worker remains the fixed, cacheable Notion upstream.
+        {
+          source: '/notion-proxy/image/:path*',
+          destination: 'https://cdn.earthyang.com/image/:path*'
+        },
+        {
+          source: '/notion-proxy/images/:path*',
+          destination: 'https://cdn.earthyang.com/images/:path*'
+        },
         // RSS fallback: when static file doesn't exist, route to API
         {
           source: '/rss/feed.xml',

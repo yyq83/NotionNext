@@ -125,6 +125,39 @@ describe('mapImgUrl 外链图片', () => {
     expect(ret).toContain('t=block-id-5')
   })
 
+  describe('同源代理包含路径前缀', () => {
+    beforeEach(() => {
+      BLOG.NOTION_HOST = 'https://earthyang.com/notion-proxy'
+    })
+
+    it('附件路径和查询参数保留在同源代理下', () => {
+      const mapped = mapImgUrl(
+        'attachment:file-id:示例 photo.webp',
+        imageBlock('attachment-block'),
+        'block',
+        false
+      )
+      const url = new URL(mapped)
+      expect(url.origin).toBe('https://earthyang.com')
+      expect(url.pathname.startsWith('/notion-proxy/image/')).toBe(true)
+      expect(proxySource(mapped)).toBe('attachment:file-id:示例 photo.webp')
+      expect(url.searchParams.get('id')).toBe('attachment-block')
+      expect(url.searchParams.get('table')).toBe('block')
+    })
+
+    it('内置头像从 Notion 原站读取且不重复包装', () => {
+      const mapped = mapImgUrl('/icons/aquarius_gray.svg', imageBlock('icon'))
+      expect(proxySource(mapped)).toBe('https://www.notion.so/icons/aquarius_gray.svg')
+      expect(mapImgUrl(mapped, imageBlock('icon')).split('/image/')).toHaveLength(2)
+    })
+
+    it('内置封面保留代理前缀且不经过附件接口', () => {
+      expect(mapImgUrl('/images/page-cover/solid_blue.png', imageBlock('cover'))).toBe(
+        'https://earthyang.com/notion-proxy/images/page-cover/solid_blue.png'
+      )
+    })
+  })
+
   describe('外链压缩参数（回归：代理前需先做源站压缩）', () => {
     const unsplashUrl = 'https://images.unsplash.com/photo-1234567890'
 
