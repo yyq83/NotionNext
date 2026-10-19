@@ -1,9 +1,9 @@
 import { siteConfig } from '@/lib/config'
 import { loadExternalResource } from '@/lib/utils'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 /**
- * Giscus评论 @see https://giscus.app/zh-CN
+ * Twikoo评论 @see https://twikoo.js.org
  * Contribute by @txs https://github.com/txs/NotionNext/commit/1bf7179d0af21fb433e4c7773504f244998678cb
  * @returns {JSX.Element}
  * @constructor
@@ -14,9 +14,12 @@ const Twikoo = ({ isDarkMode }) => {
   const el = siteConfig('COMMENT_TWIKOO_ELEMENT_ID', '#twikoo')
   const twikooCDNURL = siteConfig('COMMENT_TWIKOO_CDN_URL')
   const lang = siteConfig('LANG')
-  const [isInit] = useState(useRef(false))
+  const isInit = useRef(false)
+  const isLoading = useRef(false)
 
   const loadTwikoo = async () => {
+    if (isLoading.current || isInit.current) return
+    isLoading.current = true
     try {
       await loadExternalResource(twikooCDNURL, 'js')
       const twikoo = window?.twikoo
@@ -25,7 +28,7 @@ const Twikoo = ({ isDarkMode }) => {
         twikoo &&
         typeof twikoo.init === 'function'
       ) {
-        twikoo.init({
+        await twikoo.init({
           envId: envId, // 腾讯云环境填 envId；Vercel 环境填地址（https://xxx.vercel.app）
           el: el, // 容器元素
           lang: lang // 用于手动设定评论区语言，支持的语言列表 https://github.com/imaegoo/twikoo/blob/main/src/client/utils/i18n/index.js
@@ -37,6 +40,8 @@ const Twikoo = ({ isDarkMode }) => {
       }
     } catch (error) {
       console.error('twikoo 加载失败', error)
+    } finally {
+      isLoading.current = false
     }
   }
 

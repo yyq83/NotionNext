@@ -303,6 +303,11 @@ const nextConfig = {
 
       return [
         ...langsRewrites,
+        // Keep comment traffic on the blog domain; the upstream is fixed.
+        {
+          source: '/comments-api',
+          destination: 'https://mytwikoo-six.vercel.app/'
+        },
         // Keep browser image requests on the site's reachable Vercel domain.
         // The existing Worker remains the fixed, cacheable Notion upstream.
         {
@@ -337,6 +342,19 @@ const nextConfig = {
     ? undefined
     : () => {
       return [
+        {
+          source: '/comments-api',
+          headers: [
+            { key: 'Cache-Control', value: 'private, no-store' },
+            { key: 'CDN-Cache-Control', value: 'no-store' }
+          ]
+        },
+        {
+          source: '/vendor/twikoo/2.0.15/:path*',
+          headers: [
+            { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }
+          ]
+        },
         {
           source: '/vendor/fontawesome/:path*',
           headers: [
