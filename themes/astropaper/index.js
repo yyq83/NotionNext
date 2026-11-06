@@ -169,12 +169,25 @@ const LayoutSearch = ({
   )
 }
 
-const LayoutTagIndex = ({ tagOptions }) => {
+const LayoutTagIndex = ({ categoryOptions, tagOptions }) => {
   const { locale } = useGlobal()
+  const { CATEGORY, TAGS } = locale.COMMON
+  const hasCategories = Boolean(categoryOptions?.length)
   return (
     <div className='paper-page'>
-      <h1 className='paper-title'>{locale.COMMON.TAGS}</h1>
-      <Taxonomy items={tagOptions} route='tag' />
+      <h1 className='paper-title'>
+        {hasCategories ? `${CATEGORY} / ${TAGS}` : TAGS}
+      </h1>
+      {hasCategories && (
+        <section className='paper-section paper-taxonomy-section'>
+          <h2>{CATEGORY}</h2>
+          <Taxonomy items={categoryOptions} route='category' />
+        </section>
+      )}
+      <section className='paper-section paper-taxonomy-section'>
+        {hasCategories && <h2>{TAGS}</h2>}
+        <Taxonomy items={tagOptions} route='tag' />
+      </section>
     </div>
   )
 }

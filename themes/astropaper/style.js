@@ -250,6 +250,10 @@ export const Style = () => (
       gap: 0.5rem 1.35rem;
     }
 
+    #theme-astropaper .paper-taxonomy-section {
+      padding-block: 1.25rem;
+    }
+
     #theme-astropaper .paper-taxonomy:empty {
       display: none;
     }
