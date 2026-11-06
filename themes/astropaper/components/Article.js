@@ -71,6 +71,7 @@ export const Article = ({ post, lock, validPassword, prev, next }) => {
       </p>
     )
   const isPost = post.type === 'Post'
+  const isAbout = post.type === 'Page' && post.slug === 'about'
   const rootContent = post.blockMap?.block?.[post.id]?.value?.content
   const toc =
     !lock && rootContent
@@ -87,7 +88,7 @@ export const Article = ({ post, lock, validPassword, prev, next }) => {
           <IconArrowLeft size={17} aria-hidden /> {locale.NAV.ARCHIVE}
         </SmartLink>
       )}
-      <h1 className='paper-title'>{post.title}</h1>
+      <h1 className={isAbout ? 'sr-only' : 'paper-title'}>{post.title}</h1>
       {isPost && <PostDate post={post} />}
       {lock ? (
         <PostLock key={post.id} validPassword={validPassword} />

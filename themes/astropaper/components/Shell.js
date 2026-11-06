@@ -78,7 +78,7 @@ export const Socials = () => {
   )
 }
 
-export const Header = ({ title }) => {
+export const Header = ({ title, customMenu = [] }) => {
   const router = useRouter()
   const { locale, isDarkMode, toggleDarkMode } = useGlobal()
   const nav = [
@@ -86,6 +86,18 @@ export const Header = ({ title }) => {
     { href: '/tag', label: locale.COMMON.TAGS },
     { href: '/about', label: locale.NAV.ABOUT }
   ]
+  const seen = new Set([
+    '/',
+    '/#',
+    '#',
+    '/search',
+    ...nav.map(item => item.href)
+  ])
+  for (const { href, name, show, target } of customMenu) {
+    if (!href || !name || show === false || seen.has(href)) continue
+    nav.push({ href, label: name, target })
+    seen.add(href)
+  }
   const active = href =>
     router.pathname === href ||
     router.asPath.split(/[?#]/)[0] === href ||
@@ -99,10 +111,11 @@ export const Header = ({ title }) => {
         <span>{title}</span>
       </SmartLink>
       <nav className='paper-nav'>
-        {nav.map(({ href, label }) => (
+        {nav.map(({ href, label, target }) => (
           <SmartLink
             key={href}
             href={href}
+            target={target}
             aria-current={active(href) ? 'page' : undefined}
           >
             {label}

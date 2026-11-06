@@ -18,7 +18,7 @@ const LayoutBase = ({ children, siteInfo, customMenu }) => {
     <div id='theme-astropaper'>
       <Style />
       <div className='paper-shell'>
-        {!isLiteMode && <Header title={title} />}
+        {!isLiteMode && <Header title={title} customMenu={customMenu} />}
         <main id='paper-main' className='paper-main'>
           {children}
         </main>
