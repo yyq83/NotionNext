@@ -149,7 +149,6 @@ export const Header = ({ title, customMenu = [] }) => {
 }
 
 export const Footer = ({ title, customMenu = [] }) => {
-  const { locale } = useGlobal()
   const since = siteConfig('SINCE')
   const filing = siteConfig('BEI_AN')
   const year = new Date().getFullYear()
@@ -168,14 +167,15 @@ export const Footer = ({ title, customMenu = [] }) => {
 
   return (
     <footer className='paper-footer'>
-      <div className='paper-footer-links'>
-        <SmartLink href='/category'>{locale.COMMON.CATEGORY}</SmartLink>
-        {links.map(({ href, name, target }) => (
-          <SmartLink key={href} href={href} target={target}>
-            {name}
-          </SmartLink>
-        ))}
-      </div>
+      {links.length > 0 && (
+        <div className='paper-footer-links'>
+          {links.map(({ href, name, target }) => (
+            <SmartLink key={href} href={href} target={target}>
+              {name}
+            </SmartLink>
+          ))}
+        </div>
+      )}
       <div className='paper-footer-bottom'>
         <p>
           © {since && String(since) !== String(year) ? `${since}–` : ''}
