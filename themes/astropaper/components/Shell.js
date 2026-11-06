@@ -12,6 +12,7 @@ import {
   IconSearch,
   IconSun
 } from '@tabler/icons-react'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 const socialLinks = [
@@ -20,6 +21,23 @@ const socialLinks = [
   ['CONTACT_BILIBILI', '哔哩哔哩', IconBrandBilibili],
   ['CONTACT_LINKEDIN', 'LinkedIn', IconBrandLinkedin]
 ]
+
+export const SiteIcon = ({ size }) => {
+  const src = siteConfig('BLOG_FAVICON') || siteConfig('AVATAR')
+  if (!src) return null
+
+  return (
+    <Image
+      src={src}
+      alt=''
+      width={size}
+      height={size}
+      loading='eager'
+      unoptimized
+      className='paper-site-icon'
+    />
+  )
+}
 
 export const Socials = () => {
   const { locale } = useGlobal()
@@ -77,7 +95,8 @@ export const Header = ({ title }) => {
   return (
     <header className='paper-header'>
       <SmartLink href='/' className='paper-brand'>
-        {title}
+        <SiteIcon size={24} />
+        <span>{title}</span>
       </SmartLink>
       <nav className='paper-nav'>
         {nav.map(({ href, label }) => (

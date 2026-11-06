@@ -56,6 +56,18 @@ export const Style = () => (
       letter-spacing: -0.02em;
     }
 
+    #theme-astropaper .paper-brand,
+    #theme-astropaper .paper-hero h1 {
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+
+    #theme-astropaper .paper-site-icon {
+      flex: none;
+      object-fit: contain;
+    }
+
     #theme-astropaper .paper-nav,
     #theme-astropaper .paper-icons,
     #theme-astropaper .paper-inline,
@@ -123,6 +135,11 @@ export const Style = () => (
       line-height: 1.2;
       letter-spacing: -0.045em;
       font-weight: 750;
+    }
+
+    #theme-astropaper .paper-hero .paper-site-icon {
+      width: clamp(1.75rem, 5vw, 2.5rem);
+      height: auto;
     }
 
     #theme-astropaper .paper-hero .paper-icons {

@@ -53,6 +53,7 @@ const SmartLink = ({ href, children, ...rest }) => {
     if (typeof window === 'undefined') return {}
     const queryString = window.location.search?.slice(1) || ''
     const params = new URLSearchParams(queryString)
+    if (/\/search\/?$/.test(window.location.pathname)) params.delete('s')
     const preserved = {}
     for (const [key, value] of params.entries()) {
       if (value !== '') preserved[key] = value

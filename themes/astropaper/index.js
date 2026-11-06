@@ -5,7 +5,7 @@ import { useGlobal } from '@/lib/global'
 import { IconArrowRight, IconRss } from '@tabler/icons-react'
 import { Article } from './components/Article'
 import { Pagination, PostList, SearchForm, Taxonomy } from './components/Posts'
-import { Footer, Header, Socials } from './components/Shell'
+import { Footer, Header, SiteIcon, Socials } from './components/Shell'
 import CONFIG from './config'
 import { Style } from './style'
 
@@ -46,7 +46,10 @@ const LayoutIndex = ({ posts = [], siteInfo }) => {
     <>
       <section className='paper-hero'>
         <div className='paper-hero-title'>
-          <h1>{title}</h1>
+          <h1>
+            <SiteIcon size={40} />
+            <span>{title}</span>
+          </h1>
           {siteConfig('ENABLE_RSS') && (
             <a
               href='/rss/feed.xml'
@@ -120,7 +123,12 @@ const LayoutPostList = ({ tag, category, posts, ...pagination }) => {
   )
 }
 
-const LayoutSearch = ({ keyword = '', posts, ...pagination }) => {
+const LayoutSearch = ({
+  keyword = '',
+  posts,
+  browserSearch,
+  ...pagination
+}) => {
   const { locale } = useGlobal()
   return (
     <div className='paper-page'>
@@ -134,7 +142,7 @@ const LayoutSearch = ({ keyword = '', posts, ...pagination }) => {
               : locale.COMMON.NO_RESULTS_FOUND}
           </p>
           <PostList posts={posts} />
-          <Pagination {...pagination} />
+          {!browserSearch && <Pagination {...pagination} />}
         </>
       )}
     </div>

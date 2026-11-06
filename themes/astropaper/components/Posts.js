@@ -94,18 +94,25 @@ export const SearchForm = ({ keyword }) => {
 
   const submit = event => {
     event.preventDefault()
-    const value = new FormData(event.currentTarget).get('q').trim()
-    const { theme } = router.query
-    router.push({
-      pathname: value ? `/search/${encodeURIComponent(value)}` : '/search',
-      query: theme ? { theme } : undefined
+    const value = new FormData(event.currentTarget).get('s').trim()
+    const query = {}
+    if (router.query.theme) query.theme = router.query.theme
+    if (value) query.s = value
+    router.push({ pathname: '/search', query }, undefined, {
+      shallow: router.pathname === '/search',
+      scroll: false
     })
   }
 
   return (
-    <form onSubmit={submit} role='search' className='paper-form'>
+    <form
+      action='/search'
+      onSubmit={submit}
+      role='search'
+      className='paper-form'
+    >
       <input
-        name='q'
+        name='s'
         type='search'
         defaultValue={keyword}
         placeholder={label}

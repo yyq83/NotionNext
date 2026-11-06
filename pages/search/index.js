@@ -13,27 +13,28 @@ const Search = props => {
   const { posts } = props
 
   const router = useRouter()
-  const keyword = router?.query?.s
+  const query = router.query.s
+  const keyword = typeof query === 'string' ? query.trim() : ''
+  const searchTerm = keyword.toLowerCase()
 
-  let filteredPosts
-  // 静态过滤
-  if (keyword) {
-    filteredPosts = posts.filter(post => {
-      const tagContent = post?.tags ? post?.tags.join(' ') : ''
-      const categoryContent = post.category ? post.category.join(' ') : ''
-      const searchContent =
-        post.title + post.summary + tagContent + categoryContent
-      return searchContent.toLowerCase().includes(keyword.toLowerCase())
-    })
-  } else {
-    filteredPosts = []
-  }
+  const filteredPosts = searchTerm
+    ? posts.filter(({ title, summary, tags, category }) =>
+        [title, summary, tags, category]
+          .flat()
+          .some(
+            text =>
+              typeof text === 'string' &&
+              text.toLowerCase().includes(searchTerm)
+          )
+      )
+    : []
 
   props = {
     ...props,
     posts: filteredPosts,
     postCount: filteredPosts.length,
-    keyword: keyword || ''
+    keyword,
+    browserSearch: true
   }
 
   const theme = siteConfig('THEME', BLOG.THEME, props.NOTION_CONFIG)
@@ -49,9 +50,11 @@ export async function getStaticProps({ locale }) {
     locale
   })
   const { allPages } = props
-  props.posts = allPages?.filter(
-    page => page.type === 'Post' && page.status === 'Published'
-  )
+  props.posts =
+    allPages?.filter(
+      page => page.type === 'Post' && page.status === 'Published'
+    ) || []
+  delete props.allPages
   return {
     props,
     revalidate: process.env.EXPORT
