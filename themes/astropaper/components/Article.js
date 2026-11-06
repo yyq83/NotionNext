@@ -34,6 +34,31 @@ const PostLock = ({ validPassword }) => {
   )
 }
 
+const TocList = ({ toc }) => (
+  <ul className='paper-toc-list'>
+    {toc.map(({ id, indentLevel, text }) => (
+      <li key={id} style={{ marginInlineStart: `${indentLevel}rem` }}>
+        <a href={`#${uuidToId(id)}`}>{text}</a>
+      </li>
+    ))}
+  </ul>
+)
+
+const ArticleToc = ({ toc, label }) => (
+  <>
+    <details className='paper-toc'>
+      <summary>{label}</summary>
+      <TocList toc={toc} />
+    </details>
+    <aside className='paper-toc-side'>
+      <nav aria-label={label}>
+        <p className='paper-toc-title'>{label}</p>
+        <TocList toc={toc} />
+      </nav>
+    </aside>
+  </>
+)
+
 export const Article = ({ post, lock, validPassword, prev, next }) => {
   const { locale } = useGlobal()
   const router = useRouter()
@@ -67,21 +92,9 @@ export const Article = ({ post, lock, validPassword, prev, next }) => {
       {lock ? (
         <PostLock key={post.id} validPassword={validPassword} />
       ) : (
-        <>
+        <div className='paper-article-body'>
           {toc.length > 0 && (
-            <details className='paper-toc'>
-              <summary>{locale.COMMON.TABLE_OF_CONTENTS}</summary>
-              <ul>
-                {toc.map(({ id, indentLevel, text }) => (
-                  <li
-                    key={id}
-                    style={{ marginInlineStart: `${indentLevel}rem` }}
-                  >
-                    <a href={`#${uuidToId(id)}`}>{text}</a>
-                  </li>
-                ))}
-              </ul>
-            </details>
+            <ArticleToc toc={toc} label={locale.COMMON.TABLE_OF_CONTENTS} />
           )}
           <ArticleExpirationNotice post={post} />
           <AISummary aiSummary={post.aiSummary} />
@@ -116,7 +129,7 @@ export const Article = ({ post, lock, validPassword, prev, next }) => {
             </div>
           )}
           <Comment frontMatter={post} />
-        </>
+        </div>
       )}
     </article>
   )

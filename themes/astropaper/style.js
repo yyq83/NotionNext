@@ -300,9 +300,57 @@ export const Style = () => (
       font-weight: 600;
     }
 
-    #theme-astropaper .paper-toc ul {
+    #theme-astropaper .paper-toc .paper-toc-list {
       margin: 0.5rem 0 0 1.25rem;
       list-style: disc;
+    }
+
+    #theme-astropaper .paper-toc-side {
+      display: none;
+    }
+
+    @media (min-width: 80rem) {
+      #theme-astropaper .paper-article-body {
+        position: relative;
+      }
+
+      #theme-astropaper .paper-toc {
+        display: none;
+      }
+
+      #theme-astropaper .paper-toc-side {
+        display: block;
+        position: absolute;
+        inset-block: 0;
+        inset-inline-start: calc(100% + 2rem);
+        width: min(15rem, calc((100vw - 100%) / 2 - 3rem));
+      }
+
+      #theme-astropaper .paper-toc-side nav {
+        position: sticky;
+        top: 2rem;
+        max-height: calc(100dvh - 4rem);
+        overflow-y: auto;
+        border-inline-start: 1px solid var(--paper-border);
+        padding: 0.25rem 0.5rem 0.25rem 1rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: var(--paper-muted);
+      }
+
+      #theme-astropaper .paper-toc-title {
+        margin-bottom: 0.5rem;
+        color: var(--paper-fg);
+        font-weight: 700;
+      }
+
+      #theme-astropaper .paper-toc-side .paper-toc-list li + li {
+        margin-top: 0.25rem;
+      }
+
+      #theme-astropaper .paper-toc-side a {
+        display: block;
+      }
     }
 
     #theme-astropaper .paper-empty {
