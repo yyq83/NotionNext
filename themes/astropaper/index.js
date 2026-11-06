@@ -174,6 +174,23 @@ const Layout404 = () => {
   )
 }
 
+const layouts = {
+  Layout404,
+  LayoutArchive,
+  LayoutBase,
+  LayoutCategoryIndex,
+  LayoutIndex,
+  LayoutPostList,
+  LayoutSearch,
+  LayoutSlug: Article,
+  LayoutTagIndex
+}
+
+export const AstroPaperLayout = ({ layoutName = 'LayoutBase', ...props }) => {
+  const Layout = layouts[layoutName] || Article
+  return <Layout {...props} />
+}
+
 export {
   Layout404,
   LayoutArchive,

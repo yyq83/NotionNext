@@ -10,6 +10,11 @@ const baseLayoutCache = new Map()
 const layoutByThemeCache = new Map()
 let domFixTimer = null
 
+// A module-scope import lets Next preload AstroPaper for static rendering and hydration.
+const AstroPaperLayout = dynamic(() =>
+  import('@/themes/astropaper').then(mod => mod.AstroPaperLayout)
+)
+
 const LayoutLoading = () => (
   <div className='min-h-screen w-full bg-[#f6f6f1] dark:bg-black' />
 )
@@ -191,6 +196,7 @@ const getCurrentTheme = (router, fallbackTheme) => {
  */
 export const getBaseLayoutByTheme = theme => {
   const normalizedTheme = normalizeThemeName(theme)
+  if (normalizedTheme === 'astropaper') return AstroPaperLayout
   if (baseLayoutCache.has(normalizedTheme)) {
     return baseLayoutCache.get(normalizedTheme)
   }
@@ -222,6 +228,10 @@ export const DynamicLayout = props => {
 export const useLayoutByTheme = ({ layoutName, theme }) => {
   const router = useRouter()
   const themeQuery = getCurrentTheme(router, theme)
+  if (themeQuery === 'astropaper') {
+    scheduleFixThemeDOM(themeQuery === BLOG.THEME ? 80 : 240)
+    return AstroPaperLayout
+  }
   const cacheKey = `${themeQuery}:${layoutName}`
 
   if (layoutByThemeCache.has(cacheKey)) {
