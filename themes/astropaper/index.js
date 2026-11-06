@@ -105,7 +105,7 @@ const LayoutIndex = ({ posts = [], siteInfo }) => {
   )
 }
 
-const LayoutArchive = ({ archivePosts = {} }) => {
+const LayoutArchive = ({ archivePosts = {}, categoryOptions }) => {
   const { locale } = useGlobal()
   const years = new Map()
   for (const [month, posts] of Object.entries(archivePosts)) {
@@ -117,9 +117,12 @@ const LayoutArchive = ({ archivePosts = {} }) => {
   return (
     <div className='paper-page'>
       <h1 className='paper-title'>{locale.NAV.ARCHIVE}</h1>
-      <SmartLink className='paper-accent' href='/category'>
-        {locale.COMMON.CATEGORY}
-      </SmartLink>
+      {categoryOptions?.length > 0 && (
+        <section className='paper-section paper-taxonomy-section'>
+          <h2>{locale.COMMON.CATEGORY}</h2>
+          <Taxonomy items={categoryOptions} route='category' />
+        </section>
+      )}
       {[...years].map(([year, posts]) => (
         <section key={year} className='paper-section'>
           <h2>{year}</h2>
