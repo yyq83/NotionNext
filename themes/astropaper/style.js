@@ -122,6 +122,21 @@ export const Style = () => (
       border-bottom: 1px solid var(--paper-border);
     }
 
+    #theme-astropaper .paper-hero-with-image {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) clamp(8rem, 22vw, 11rem);
+      align-items: center;
+      gap: clamp(1.25rem, 4vw, 2rem);
+    }
+
+    #theme-astropaper .paper-hero-image {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: contain;
+      border-radius: 0.5rem;
+    }
+
     #theme-astropaper .paper-hero-title {
       display: flex;
       flex-wrap: wrap;
@@ -131,6 +146,7 @@ export const Style = () => (
     }
 
     #theme-astropaper .paper-hero h1 {
+      min-width: 0;
       font-size: clamp(2rem, 6vw, 3rem);
       line-height: 1.2;
       letter-spacing: -0.045em;
@@ -389,6 +405,17 @@ export const Style = () => (
 
     #theme-astropaper .paper-article-end {
       margin-top: 2rem;
+    }
+
+    @media (max-width: 40rem) {
+      #theme-astropaper .paper-hero-with-image {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      #theme-astropaper .paper-hero-image {
+        justify-self: center;
+        width: min(100%, 8.5rem);
+      }
     }
 
     @media (max-width: 36rem) {

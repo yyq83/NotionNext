@@ -3,6 +3,7 @@ import SmartLink from '@/components/SmartLink'
 import { siteConfig } from '@/lib/config'
 import { useGlobal } from '@/lib/global'
 import { IconArrowRight, IconRss } from '@tabler/icons-react'
+import Image from 'next/image'
 import { Article } from './components/Article'
 import { Pagination, PostList, SearchForm, Taxonomy } from './components/Posts'
 import { Footer, Header, SiteIcon, Socials } from './components/Shell'
@@ -31,6 +32,8 @@ const LayoutIndex = ({ posts = [], siteInfo }) => {
   const { locale } = useGlobal()
   const title = siteConfig('TITLE', siteInfo?.title)
   const description = siteConfig('DESCRIPTION', siteInfo?.description)
+  const heroImage = siteConfig('ASTROPAPER_HERO_IMAGE', null, CONFIG)
+  const showHeroImage = typeof heroImage === 'string' && heroImage.length > 0
   const featuredTag =
     siteConfig('TOP_TAG') || siteConfig('ASTROPAPER_FEATURED_TAG', null, CONFIG)
   const featured = featuredTag
@@ -44,25 +47,42 @@ const LayoutIndex = ({ posts = [], siteInfo }) => {
 
   return (
     <>
-      <section className='paper-hero'>
-        <div className='paper-hero-title'>
-          <h1>
-            <SiteIcon size={40} />
-            <span>{title}</span>
-          </h1>
-          {siteConfig('ENABLE_RSS') && (
-            <a
-              href='/rss/feed.xml'
-              className='paper-icon paper-accent'
-              aria-label={locale.NAV.RSS}
-              title={locale.NAV.RSS}
-            >
-              <IconRss size={23} aria-hidden />
-            </a>
-          )}
+      <section
+        className={
+          showHeroImage ? 'paper-hero paper-hero-with-image' : 'paper-hero'
+        }
+      >
+        <div className='paper-hero-copy'>
+          <div className='paper-hero-title'>
+            <h1>
+              <SiteIcon size={40} />
+              <span>{title}</span>
+            </h1>
+            {siteConfig('ENABLE_RSS') && (
+              <a
+                href='/rss/feed.xml'
+                className='paper-icon paper-accent'
+                aria-label={locale.NAV.RSS}
+                title={locale.NAV.RSS}
+              >
+                <IconRss size={23} aria-hidden />
+              </a>
+            )}
+          </div>
+          {description && <p>{description}</p>}
+          <Socials />
         </div>
-        {description && <p>{description}</p>}
-        <Socials />
+        {showHeroImage && (
+          <Image
+            src={heroImage}
+            alt=''
+            width={300}
+            height={300}
+            loading='eager'
+            unoptimized
+            className='paper-hero-image'
+          />
+        )}
       </section>
       {featured.length > 0 && (
         <section className='paper-section'>
