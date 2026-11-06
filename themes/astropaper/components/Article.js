@@ -6,10 +6,11 @@ import ShareBar from '@/components/ShareBar'
 import SmartLink from '@/components/SmartLink'
 import { getPageTableOfContents } from '@/lib/db/notion/getPageTableOfContents'
 import { useGlobal } from '@/lib/global'
-import { IconArrowLeft, IconArrowUp } from '@tabler/icons-react'
+import { IconArrowUp } from '@tabler/icons-react'
 import { uuidToId } from 'notion-utils'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { PageBack } from './PageBack'
 import { PostDate, Taxonomy } from './Posts'
 
 const PostLock = ({ validPassword }) => {
@@ -83,11 +84,10 @@ export const Article = ({ post, lock, validPassword, prev, next }) => {
 
   return (
     <article id='article-wrapper' className='paper-article'>
-      {isPost && (
-        <SmartLink href='/archive' className='paper-inline paper-back'>
-          <IconArrowLeft size={17} aria-hidden /> {locale.NAV.ARCHIVE}
-        </SmartLink>
-      )}
+      <PageBack
+        href={isPost ? '/archive' : '/'}
+        label={isPost ? locale.NAV.ARCHIVE : locale.NAV.INDEX}
+      />
       <h1 className={isAbout ? 'sr-only' : 'paper-title'}>{post.title}</h1>
       {isPost && <PostDate post={post} />}
       {lock ? (

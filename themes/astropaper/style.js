@@ -381,6 +381,10 @@ export const Style = () => (
       margin-bottom: 1rem;
     }
 
+    #theme-astropaper .paper-empty .paper-back {
+      margin-inline: auto;
+    }
+
     #theme-astropaper .paper-article #notion-article {
       margin-top: 1.25rem;
     }

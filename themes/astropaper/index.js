@@ -5,6 +5,7 @@ import { useGlobal } from '@/lib/global'
 import { IconArrowRight, IconRss } from '@tabler/icons-react'
 import Image from 'next/image'
 import { Article } from './components/Article'
+import { PageBack } from './components/PageBack'
 import { Pagination, PostList, SearchForm, Taxonomy } from './components/Posts'
 import { Footer, Header, SiteIcon, Socials } from './components/Shell'
 import CONFIG from './config'
@@ -116,6 +117,7 @@ const LayoutArchive = ({ archivePosts = {}, categoryOptions }) => {
 
   return (
     <div className='paper-page'>
+      <PageBack href='/' label={locale.NAV.INDEX} />
       <h1 className='paper-title'>{locale.NAV.ARCHIVE}</h1>
       {categoryOptions?.length > 0 && (
         <section className='paper-section paper-taxonomy-section'>
@@ -137,6 +139,10 @@ const LayoutPostList = ({ tag, category, posts, ...pagination }) => {
   const { locale } = useGlobal()
   return (
     <div className='paper-page'>
+      <PageBack
+        href={tag || category ? '/tag' : '/archive'}
+        label={tag || category ? locale.COMMON.TAGS : locale.NAV.ARCHIVE}
+      />
       <h1 className='paper-title'>
         {tag ? `#${tag}` : category || locale.COMMON.ARTICLE_LIST}
       </h1>
@@ -155,6 +161,10 @@ const LayoutSearch = ({
   const { locale } = useGlobal()
   return (
     <div className='paper-page'>
+      <PageBack
+        href={keyword ? '/search' : '/'}
+        label={keyword ? locale.NAV.SEARCH : locale.NAV.INDEX}
+      />
       <h1 className='paper-title'>{locale.NAV.SEARCH}</h1>
       <SearchForm key={keyword} keyword={keyword} />
       {keyword && (
@@ -178,6 +188,7 @@ const LayoutTagIndex = ({ categoryOptions, tagOptions }) => {
   const hasCategories = Boolean(categoryOptions?.length)
   return (
     <div className='paper-page'>
+      <PageBack href='/' label={locale.NAV.INDEX} />
       <h1 className='paper-title'>
         {hasCategories ? `${CATEGORY} / ${TAGS}` : TAGS}
       </h1>
@@ -199,6 +210,7 @@ const LayoutCategoryIndex = ({ categoryOptions }) => {
   const { locale } = useGlobal()
   return (
     <div className='paper-page'>
+      <PageBack href='/tag' label={locale.COMMON.TAGS} />
       <h1 className='paper-title'>{locale.COMMON.CATEGORY}</h1>
       <Taxonomy items={categoryOptions} route='category' />
     </div>
@@ -211,9 +223,7 @@ const Layout404 = () => {
     <div className='paper-page paper-empty'>
       <h1 className='paper-title'>404</h1>
       <p>{locale.NAV.PAGE_NOT_FOUND}</p>
-      <SmartLink href='/' className='paper-accent'>
-        {locale.NAV.INDEX}
-      </SmartLink>
+      <PageBack href='/' label={locale.NAV.INDEX} />
     </div>
   )
 }
